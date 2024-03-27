@@ -19,5 +19,8 @@ jobs:
       run: |
         pip install -r etc/app/challenge/requirements.txt
         coverage run -m unittest discover
-    - name: Upload Coverage to Codecov
-      uses: codecov/codecov-action@v2
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4.0.1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        slug: AdriRRP/joinup-challenge
