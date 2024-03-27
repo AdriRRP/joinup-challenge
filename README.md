@@ -1,4 +1,5 @@
 # Django Rest Framework with DDD and CQRS REST API
+[![codecov](https://codecov.io/gh/AdriRRP/joinup-challenge/graph/badge.svg?token=HfvheNjVR0)](https://codecov.io/gh/AdriRRP/joinup-challenge)
 
 This repository is a proposal for the technical challenge launched by Joinup.
 The challenge requirements are the following:
