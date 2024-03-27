@@ -1,26 +1,28 @@
 name: CodeCov
-on: [push, pull_request]
-jobs:
-  run:
-    runs-on: ubuntu-latest
-    env:
-      OS: ubuntu-latest
-      PYTHON: '3.9'
-    steps:
-    - uses: checkout@v4
-      with:
-        fetch-depth: ‘2’
 
-    - name: Setup Python
-      uses: actions/setup-python@master
-      with:
-        python-version: 3.9
-    - name: Generate Report
-      run: |
-        pip install -r etc/app/challenge/requirements.txt
-        coverage run -m unittest discover
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v4.0.1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        slug: AdriRRP/joinup-challenge
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install -r etc/app/challenge/requirements.txt
+      - name: Run tests and collect coverage
+        run: coverage run -m unittest discover
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: AdriRRP/joinup-challenge
