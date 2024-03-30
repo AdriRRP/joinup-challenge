@@ -1,5 +1,5 @@
 from lib.challenge.user.application.find.by_id.response.response import Response as UserResponse
-from lib.challenge.user.domain.user.user import User
+from lib.challenge.user.domain.user import User
 
 
 class Converter:

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from result import Result
 
-from lib.challenge.user.domain.user.repository import Repository
-from lib.challenge.user.domain.user.users import Users
+from lib.challenge.user.domain.repository import Repository
+from lib.challenge.user.domain.users import Users
 
 
 class UsersFinder:

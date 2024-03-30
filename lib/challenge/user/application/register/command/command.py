@@ -39,7 +39,7 @@ class Command(AbstractCommand):
             phone: str,
             hobbies: str) -> Command:
         """
-        Factory method to create a new Query.
+        Factory method to create a new Command.
 
         @param id:      user id in string format
         @param name:    user name in string format
@@ -47,7 +47,7 @@ class Command(AbstractCommand):
         @param email:   user email in string format
         @param phone:   user phone in string format
         @param hobbies: user hobbies in string format
-        @return: instance of this Query
+        @return: instance of this Command
         """
 
         command = Command(id, name, surname, email, phone, hobbies)

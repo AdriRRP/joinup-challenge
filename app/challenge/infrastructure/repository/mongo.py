@@ -4,15 +4,15 @@ from typing import Optional
 from result import Result, Ok, Err
 
 from app.challenge.config import Config
-from lib.challenge.user.domain.user.email import Email
-from lib.challenge.user.domain.user.hobbies import Hobbies
-from lib.challenge.user.domain.user.id import Id
-from lib.challenge.user.domain.user.name import Name
-from lib.challenge.user.domain.user.phone import Phone
-from lib.challenge.user.domain.user.repository import Repository
-from lib.challenge.user.domain.user.surname import Surname
-from lib.challenge.user.domain.user.user import User
-from lib.challenge.user.domain.user.users import Users
+from lib.challenge.user.domain.email import Email
+from lib.challenge.user.domain.hobbies import Hobbies
+from lib.challenge.user.domain.id import Id
+from lib.challenge.user.domain.name import Name
+from lib.challenge.user.domain.phone import Phone
+from lib.challenge.user.domain.repository import Repository
+from lib.challenge.user.domain.surname import Surname
+from lib.challenge.user.domain.user import User
+from lib.challenge.user.domain.users import Users
 
 from pymongo import MongoClient
 from bson.binary import UUID
