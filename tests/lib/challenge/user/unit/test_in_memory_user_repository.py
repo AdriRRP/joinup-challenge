@@ -76,6 +76,26 @@ class TestInMemoryUserRepository(unittest.TestCase):
         users_found = repository.find_all().ok_value
         self.assertEqual(len(users_found), 3)
 
+    def test_in_memory_user_repository_verify_email(self):
+        repository = InMemory.new(TestInMemoryUserRepository.test_users)
+        user_1 = TestInMemoryUserRepository.test_user_1
+        id_user_1 = Id.new(user_1.id()).ok_value
+        found_user_1 = repository.find(id_user_1).ok_value
+        self.assertFalse(found_user_1.email_verified())
+        repository.verify_email(id_user_1)
+        found_user_1 = repository.find(id_user_1).ok_value
+        self.assertTrue(found_user_1.email_verified())
+
+    def test_in_memory_user_repository_verify_phone(self):
+        repository = InMemory.new(TestInMemoryUserRepository.test_users)
+        user_1 = TestInMemoryUserRepository.test_user_1
+        id_user_1 = Id.new(user_1.id()).ok_value
+        found_user_1 = repository.find(id_user_1).ok_value
+        self.assertFalse(found_user_1.phone_verified())
+        repository.verify_phone(id_user_1)
+        found_user_1 = repository.find(id_user_1).ok_value
+        self.assertTrue(found_user_1.phone_verified())
+
 
 if __name__ == '__main__':
     unittest.main()
