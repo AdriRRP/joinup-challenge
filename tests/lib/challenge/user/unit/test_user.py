@@ -41,7 +41,6 @@ class UserTest(unittest.TestCase):
 
         event_primitives = event.to_primitive()
         expected_event_primitives = {
-            'id': '6b0fba2d-e73f-4e33-9e65-92b7621d66b7',
             'name': 'John',
             'surname': 'Doe',
             'email': 'john.doe@mail.com',
