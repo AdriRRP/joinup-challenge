@@ -48,7 +48,7 @@ class Config:
                     config['MONGO']['uri']
                 ),
                 "database": os.getenv(
-                    Config.APP_MONGO_URI_ENV,
+                    Config.APP_MONGO_DATABASE_ENV,
                     config['MONGO']['database']
                 ),
                 "user": os.getenv(

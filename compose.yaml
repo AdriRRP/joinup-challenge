@@ -23,3 +23,66 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+
+  django-server:
+    build: .
+    restart: always
+    depends_on:
+      - mongo
+      - rabbitmq
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+    ports:
+      - "8000:8000"
+    command: ./wait-for-it.sh mongo:27017 rabbitmq:5672 --strict -- python manage.py runserver 0.0.0.0:8000
+
+  django-user-creator:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py create_user_subscriber_command
+
+  django-verification-acceptor:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py accept_email_verification_command
+
+  django-on-user-created:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py create_email_verification_on_user_created_subscriber_command
+
+  django-on-email-verification-created:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py send_verification_mail_on_email_verification_created_subscriber_command
+
+  django-on-email-verification-accepted:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py verify_email_on_email_verification_accepted_subscriber_command
