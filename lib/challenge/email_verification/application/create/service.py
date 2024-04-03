@@ -43,4 +43,5 @@ class VerificationCreator:
 
         self._repository.save(verification)
         for event in verification.pull_domain_events():
+            print(event.to_primitive())
             self._event_bus.publish(event)

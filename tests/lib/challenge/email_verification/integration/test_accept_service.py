@@ -1,6 +1,6 @@
 import unittest
 
-from lib.challenge.email_verification.application.accept.service import VerificationAcceptor
+from lib.challenge.email_verification.application.accept.service import EmailVerificationAcceptor
 from lib.challenge.email_verification.domain.domain_event.accepted import Accepted
 from lib.challenge.email_verification.domain.domain_event.not_accepted import NotAccepted
 from lib.challenge.email_verification.domain.verification import Verification
@@ -35,7 +35,7 @@ class TestVerificationAcceptor(unittest.TestCase):
 
     def test_accept(self):
         event_bus = TestVerificationAcceptor.test_event_bus
-        service = VerificationAcceptor.new(
+        service = EmailVerificationAcceptor.new(
             TestVerificationAcceptor.test_in_memory_verification_repository,
             event_bus,
         )
@@ -49,13 +49,13 @@ class TestVerificationAcceptor(unittest.TestCase):
 
         event = event_bus.events.pop()
 
-        self.assertEqual(type(event).__name__, Accepted.__name__)
+        self.assertEqual(event.name(), Accepted.name())
 
         event_bus.clear()
 
     def test_not_accept(self):
         event_bus = TestVerificationAcceptor.test_event_bus
-        service = VerificationAcceptor.new(
+        service = EmailVerificationAcceptor.new(
             TestVerificationAcceptor.test_in_memory_verification_repository,
             event_bus,
         )
@@ -69,7 +69,7 @@ class TestVerificationAcceptor(unittest.TestCase):
 
         event = event_bus.events.pop()
 
-        self.assertEqual(type(event).__name__, NotAccepted.__name__)
+        self.assertEqual(event.name(), NotAccepted.name())
 
         event_bus.clear()
 

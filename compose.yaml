@@ -9,4 +9,17 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ./etc/mongo/challenge/user/init.js:/docker-entrypoint-initdb.d/joinup-challenge-init.js:ro
+      - ./etc/mongo/challenge/init.js:/docker-entrypoint-initdb.d/00-joinup-challenge-init.js:ro
+      - ./etc/mongo/challenge/user/init.js:/docker-entrypoint-initdb.d/01-joinup-challenge-user-init.js:ro
+      - ./etc/mongo/challenge/email_verification/init.js:/docker-entrypoint-initdb.d/02-joinup-challenge-email_verification-init.js:ro
+      - ./etc/mongo/challenge/phone_verification/init.js:/docker-entrypoint-initdb.d/03-joinup-challenge-phone_verification-init.js:ro
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: root
+      RABBITMQ_DEFAULT_PASS: 1234
+    ports:
+      - "5672:5672"
+      - "15672:15672"

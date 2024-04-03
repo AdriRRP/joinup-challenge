@@ -1,14 +1,15 @@
 from __future__ import annotations
+
 from lib.shared.domain.bus.command.handler import Handler as CommandHandler
 from lib.challenge.email_verification.application.accept.command.command import Command as AcceptCommand
-from lib.challenge.email_verification.application.accept.service import VerificationAcceptor
+from lib.challenge.email_verification.application.accept.service import EmailVerificationAcceptor
 from lib.shared.domain.value_object.uuid import Uuid
 
 
 class Handler(CommandHandler):
     """Command handler implementation to register user"""
 
-    def __init__(self, verification_acceptor: VerificationAcceptor):
+    def __init__(self, verification_acceptor: EmailVerificationAcceptor):
         """
         This constructor should be private and only called from the new() method.
         This restriction has been omitted for code simplicity.
@@ -19,7 +20,7 @@ class Handler(CommandHandler):
         self._verification_acceptor = verification_acceptor
 
     @staticmethod
-    def new(verification_acceptor: VerificationAcceptor) -> Handler:
+    def new(verification_acceptor: EmailVerificationAcceptor) -> Handler:
         """
         Factory method to create a new Command Handler.
 
@@ -43,5 +44,5 @@ class Handler(CommandHandler):
             code = Uuid.new(command.code()).ok_value
 
             self._verification_acceptor.accept(code)
-        except:
+        except Exception as e:
             pass

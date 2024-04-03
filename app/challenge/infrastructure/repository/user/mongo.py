@@ -19,7 +19,7 @@ from bson.binary import UUID
 
 
 class Mongo(Repository):
-    """Implementation for mongo challenge repository"""
+    """Implementation for mongo user repository"""
 
     def __init__(self, conf: Config):
         """
@@ -31,9 +31,9 @@ class Mongo(Repository):
 
         self._uri = conf.get()['MONGO']['uri']
         self._database_name = conf.get()['MONGO']['database']
-        self._collection_name = conf.get()['MONGO']['collection']
         self._user = conf.get()['MONGO']['user']
         self._pass = conf.get()['MONGO']['pass']
+        self._collection_name = conf.get()['CHALLENGE']['user_collection']
 
         self._client = MongoClient(
             self._uri,
@@ -60,7 +60,7 @@ class Mongo(Repository):
 
     def find(self, id: Id) -> Result[Optional[User], str]:
         try:
-            found_user = self._collection.find_one({'_id': UUID(id.value())})
+            found_user = self._collection.find_one({'_id': UUID(f"urn:uuid:{id.value()}")})
             if found_user:
                 user = User.new(
                     Id.new(str(found_user['_id'])).ok_value,
@@ -76,7 +76,7 @@ class Mongo(Repository):
             else:
                 return Ok(None)
         except Exception as e:
-            return Err(f"Can't find challenge with id `{id.value()}`: {str(e)}")
+            return Err(f"Can't find user with id `{id.value()}`: {str(e)}")
 
     def find_all(self) -> Result[Users, str]:
         try:
@@ -113,3 +113,23 @@ class Mongo(Repository):
             'email_verified': user.email_verified(),
             'phone_verified': user.phone_verified(),
         })
+
+    def verify_email(self, id: Id):
+        try:
+            self._collection.update_one(
+                {'_id': UUID(f"urn:uuid:{id.value()}")},
+                {"$set": {'email_verified': True}}
+            )
+        except Exception as e:
+            # TODO: Manage errors
+            print(f"Can't verify email for user with id `{id.value()}`: {str(e)}")
+
+    def verify_phone(self, id: Id):
+        try:
+            self._collection.update_one(
+                {'_id': UUID(f"urn:uuid:{id.value()}")},
+                {"$set": {'phone_verified': True}}
+            )
+        except Exception as e:
+            # TODO: Manage errors
+            print(f"Can't verify phone for user with id `{id.value()}`: {str(e)}")

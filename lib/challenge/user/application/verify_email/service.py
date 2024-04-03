@@ -1,19 +1,12 @@
 from __future__ import annotations
 
-from lib.challenge.user.domain.domain_event.created import Created
+from lib.challenge.user.domain.domain_event.email_verified import EmailVerified
 from lib.challenge.user.domain.id import Id
 from lib.shared.domain.bus.domain_event.bus import Bus
 from lib.challenge.user.domain.repository import Repository
-from lib.shared.domain.bus.domain_event.subscriber import Subscriber
 
 
-class UserEmailVerifier(Subscriber):
-    @staticmethod
-    def subscribed_to() -> list[str]:
-        return [
-            Created.__class__.__name__
-        ]
-
+class UserEmailVerifier:
     def __init__(self, repository: Repository, event_bus: Bus):
         """
         This constructor should be private and only called from the new() method.
@@ -49,5 +42,12 @@ class UserEmailVerifier(Subscriber):
 
         # TODO: Manage errors?
 
-        self._repository.verify_email(id)
-        self._event_bus.publish(user.pull_domain_events())
+        found_user = self._repository.find(id).ok_value
+        if found_user:
+            self._repository.verify_email(id)
+            self._event_bus.publish(EmailVerified.new(
+                id.value(),
+                found_user.name(),
+                found_user.surname(),
+                found_user.email(),
+            ))

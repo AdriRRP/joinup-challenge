@@ -7,7 +7,7 @@ from lib.shared.domain.bus.domain_event.bus import Bus
 from lib.shared.domain.value_object.uuid import Uuid
 
 
-class VerificationAcceptor:
+class EmailVerificationAcceptor:
     def __init__(self, repository: Repository, event_bus: Bus):
         """
         This constructor should be private and only called from the new() method.
@@ -21,7 +21,7 @@ class VerificationAcceptor:
         self._event_bus = event_bus
 
     @staticmethod
-    def new(repository: Repository, event_bus: Bus) -> VerificationAcceptor:
+    def new(repository: Repository, event_bus: Bus) -> EmailVerificationAcceptor:
         """
         Factory method to create a new UserRegistrar.
 
@@ -30,7 +30,7 @@ class VerificationAcceptor:
         @return: instance of VerificationAcceptor
         """
 
-        service = VerificationAcceptor(repository, event_bus)
+        service = EmailVerificationAcceptor(repository, event_bus)
         return service
 
     def accept(self, code: Uuid):
@@ -44,6 +44,7 @@ class VerificationAcceptor:
         verification_result = self._repository.find(code)
 
         if verification_result.is_ok() and verification_result.ok_value:
+            print("verification OK")
             verification = verification_result.ok_value
             self._repository.accept(code)
             self._event_bus.publish(
@@ -54,6 +55,7 @@ class VerificationAcceptor:
                 ),
             )
         else:
+            print("verification KO")
             self._event_bus.publish(
                 NotAccepted.new(
                     code.value(),

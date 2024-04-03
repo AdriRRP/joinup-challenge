@@ -14,8 +14,17 @@ class TestSingleton:
 
 
 class ConcreteCommand(Command):
+
     def __init__(self, f_name: str):
+        super().__init__()
         self.f_name = f_name
+
+    @staticmethod
+    def command_name() -> str:
+        return "test_command"
+
+    def to_primitive(self) -> dict:
+        return {}
 
 
 class ConcreteCommandHandler(Handler):

@@ -45,12 +45,11 @@ class Created(DomainEvent):
         return created_event
 
     @staticmethod
-    def event_name(self) -> str:
-        return "user.created"
+    def name() -> str:
+        return "challenge.user.created"
 
     def to_primitive(self) -> dict:
         return {
-            'id': self.aggregate_id(),
             'name': self._name,
             'surname': self._surname,
             'email': self._email,

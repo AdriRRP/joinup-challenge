@@ -29,7 +29,6 @@ class VerificationTest(unittest.TestCase):
 
         event_primitives = event.to_primitive()
         expected_event_primitives = {
-            'code': "a8f4f4f8-25e1-4a61-91d4-ec8975a2e580",
             'user_id': "6287aa63-ac02-4957-8424-efb5af11cb4a",
             'email': "john.doe@mail.com",
         }

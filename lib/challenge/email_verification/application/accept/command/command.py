@@ -14,7 +14,7 @@ class Command(AbstractCommand):
 
         @param code: verification code in string format
         """
-
+        super().__init__()
         self._code = code
 
     @staticmethod
@@ -36,3 +36,12 @@ class Command(AbstractCommand):
         @return: the string value of command code.
         """
         return self._code
+
+    @staticmethod
+    def command_name() -> str:
+        return "accept.email_verification.command"
+
+    def to_primitive(self) -> dict:
+        return {
+            'code': self._code,
+        }

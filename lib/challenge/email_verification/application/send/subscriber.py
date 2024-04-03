@@ -9,10 +9,10 @@ from lib.shared.domain.bus.domain_event.subscriber import Subscriber
 from lib.shared.domain.value_object.uuid import Uuid
 
 
-class SendVerificationMailOnVerificationCreated(Subscriber):
+class SendVerificationMailOnEmailVerificationCreated(Subscriber):
     @staticmethod
     def subscribed_to() -> list[str]:
-        return [Created.__class__.__name__]
+        return ["challenge.email_verification.created"]
 
     def __init__(self, verification_sender: VerificationSender):
         """
@@ -25,7 +25,7 @@ class SendVerificationMailOnVerificationCreated(Subscriber):
         self._verification_sender = verification_sender
 
     @staticmethod
-    def new(verification_sender: VerificationSender) -> SendVerificationMailOnVerificationCreated:
+    def new(verification_sender: VerificationSender) -> SendVerificationMailOnEmailVerificationCreated:
         """
         Factory method to create a new SendVerificationMailOnVerificationCreated.
 
@@ -33,7 +33,7 @@ class SendVerificationMailOnVerificationCreated(Subscriber):
         @return: instance of VerificationSender
         """
 
-        subscriber = SendVerificationMailOnVerificationCreated(verification_sender)
+        subscriber = SendVerificationMailOnEmailVerificationCreated(verification_sender)
         return subscriber
 
     def process(self, event: Created):

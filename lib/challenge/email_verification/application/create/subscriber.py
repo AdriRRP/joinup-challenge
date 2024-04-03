@@ -11,10 +11,10 @@ from lib.shared.domain.value_object.uuid import Uuid
 import uuid
 
 
-class CreateVerificationOnUserCreated(Subscriber):
+class CreateEmailVerificationOnUserCreated(Subscriber):
     @staticmethod
     def subscribed_to() -> list[str]:
-        return [Created.__class__.__name__]
+        return ["challenge.user.created"]
 
     def __init__(self, verification_creator: VerificationCreator):
         """
@@ -27,7 +27,7 @@ class CreateVerificationOnUserCreated(Subscriber):
         self._verification_creator = verification_creator
 
     @staticmethod
-    def new(verification_creator: VerificationCreator) -> CreateVerificationOnUserCreated:
+    def new(verification_creator: VerificationCreator) -> CreateEmailVerificationOnUserCreated:
         """
         Factory method to create a new CreateVerificationOnUserCreated.
 
@@ -35,7 +35,7 @@ class CreateVerificationOnUserCreated(Subscriber):
         @return: instance of VerificationAcceptor
         """
 
-        subscriber = CreateVerificationOnUserCreated(verification_creator)
+        subscriber = CreateEmailVerificationOnUserCreated(verification_creator)
         return subscriber
 
     def process(self, event: Created):

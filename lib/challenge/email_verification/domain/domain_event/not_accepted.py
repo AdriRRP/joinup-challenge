@@ -32,11 +32,10 @@ class NotAccepted(DomainEvent):
         return created_event
 
     @staticmethod
-    def event_name(self) -> str:
-        return "verification.not_accepted"
+    def name() -> str:
+        return "challenge.email_verification.not_accepted"
 
     def to_primitive(self) -> dict:
         return {
-            'code': self._aggregate_id,
             'cause': self._cause,
         }

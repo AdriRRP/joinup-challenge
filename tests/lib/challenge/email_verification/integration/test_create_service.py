@@ -1,6 +1,6 @@
 import unittest
 
-from lib.challenge.email_verification.application.accept.service import VerificationAcceptor
+from lib.challenge.email_verification.application.accept.service import EmailVerificationAcceptor
 from lib.challenge.email_verification.application.create.service import VerificationCreator
 from lib.challenge.email_verification.domain.domain_event.accepted import Accepted
 from lib.challenge.email_verification.domain.domain_event.created import Created

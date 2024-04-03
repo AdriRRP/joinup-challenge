@@ -1,6 +1,6 @@
 import unittest
 
-from lib.challenge.email_verification.application.accept.service import VerificationAcceptor
+from lib.challenge.email_verification.application.accept.service import EmailVerificationAcceptor
 from lib.challenge.email_verification.application.send.service import VerificationSender
 from lib.challenge.email_verification.domain.domain_event.accepted import Accepted
 from lib.challenge.email_verification.domain.domain_event.not_accepted import NotAccepted
@@ -58,7 +58,7 @@ class TestVerificationSender(unittest.TestCase):
         service = VerificationSender.new(
             email_service,
             event_bus,
-            "http://localhost/api/v1/verifications"
+            "http://localhost/api/v1/verification"
         )
 
         self.assertEqual(len(event_bus.events), 0)
@@ -75,7 +75,7 @@ class TestVerificationSender(unittest.TestCase):
         self.assertEqual(type(event).__name__, Sent.__name__)
         self.assertEqual(mail, {
             'email': verification.email(),
-            'body': f"Click http://localhost/api/v1/verifications/{verification.code()} to verify your email"
+            'body': f"Click http://localhost/api/v1/verification/{verification.code()} to verify your email"
         })
 
         event_bus.clear()

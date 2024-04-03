@@ -37,12 +37,11 @@ class EmailVerified(DomainEvent):
         return created_event
 
     @staticmethod
-    def event_name(self) -> str:
-        return "user_email.verified"
+    def name() -> str:
+        return "challenge.user.email_verified"
 
     def to_primitive(self) -> dict:
         return {
-            'id': self.aggregate_id(),
             'name': self._name,
             'surname': self._surname,
             'email': self._email,
