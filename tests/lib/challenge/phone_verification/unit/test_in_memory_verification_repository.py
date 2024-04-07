@@ -1,8 +1,8 @@
 import unittest
 
-from lib.challenge.phone_verification.domain.verification import Verification
-from lib.challenge.phone_verification.infrastructure.repository.in_memory import InMemory
-from lib.challenge.user.domain.phone import Phone
+from lib.challenge.email_verification.domain.verification import Verification
+from lib.challenge.email_verification.infrastructure.repository.in_memory import InMemory
+from lib.challenge.user.domain.email import Email
 from lib.challenge.user.domain.id import Id
 from lib.shared.domain.value_object.uuid import Uuid
 
@@ -11,19 +11,19 @@ class TestInMemoryVerificationRepository(unittest.TestCase):
     test_verification_1 = Verification.new(
         Uuid.new("a8f4f4f8-25e1-4a61-91d4-ec8975a2e580").ok_value,
         Id.new("6287aa63-ac02-4957-8424-efb5af11cb4a").ok_value,
-        Phone.new("+34 666 666 001").ok_value,
+        Email.new("first.user@mail.com").ok_value,
     )
 
     test_verification_2 = Verification.new(
         Uuid.new("8a39d23f-18ba-4a02-af27-04cdd2fc2cd4").ok_value,
         Id.new("1a42a739-0ace-42ce-bbcb-04024d0fc671").ok_value,
-        Phone.new("+34 666 666 002").ok_value,
+        Email.new("second.user@mail.com").ok_value,
     )
 
     test_verification_3 = Verification.new(
         Uuid.new("4b1efe29-a5f0-4c65-80df-27b01e46e277").ok_value,
         Id.new("ae9028fc-4117-432a-b493-2f8eaa40689a").ok_value,
-        Phone.new("+34 666 666 003").ok_value,
+        Email.new("third.user@mail.com").ok_value,
     )
 
     test_verifications = [test_verification_1, test_verification_2]

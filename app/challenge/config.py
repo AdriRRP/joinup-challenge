@@ -15,6 +15,8 @@ class Config:
     APP_MONGO_PASS_ENV = 'APP_MONGO_PASS'
 
     # Challenge env vars
+    APP_CHALLENGE_EMAIL_VERIFICATION_ROUTE_ENV = 'APP_CHALLENGE_EMAIL_VERIFICATION_ROUTE'
+    APP_CHALLENGE_PHONE_VERIFICATION_ROUTE_ENV = 'APP_CHALLENGE_PHONE_VERIFICATION_ROUTE'
     APP_CHALLENGE_USER_COLLECTION_ENV = 'APP_CHALLENGE_USER_COLLECTION'
     APP_CHALLENGE_EMAIL_VERIFICATION_COLLECTION_ENV = 'APP_CHALLENGE_EMAIL_VERIFICATION_COLLECTION'
     APP_CHALLENGE_PHONE_VERIFICATION_COLLECTION_ENV = 'APP_CHALLENGE_PHONE_VERIFICATION_COLLECTION'
@@ -26,6 +28,15 @@ class Config:
     APP_RABBITMQ_PASS_ENV = 'APP_RABBITMQ_PASS'
     APP_RABBITMQ_EVENT_BUS_EXCHANGE_ENV = 'APP_RABBITMQ_EVENT_BUS_EXCHANGE'
     APP_RABBITMQ_COMMAND_BUS_EXCHANGE_ENV = 'APP_RABBITMQ_COMMAND_BUS_EXCHANGE'
+
+    # SMTP env vars
+    APP_SMTP_HOST_ENV = 'APP_SMTP_HOST'
+    APP_SMTP_PORT_ENV = 'APP_SMTP_PORT'
+    APP_SMTP_SENDER_ENV = 'APP_SMTP_SENDER'
+    APP_SMTP_PASSWORD_ENV = 'APP_SMTP_PASSWORD'
+
+    # Django settings module
+    DJANGO_SETTINGS_MODULE_ENV = 'DJANGO_SETTINGS_MODULE'
 
     def __init__(self):
         """
@@ -61,6 +72,14 @@ class Config:
                 ),
             },
             "CHALLENGE": {
+                "email_verification_route": os.getenv(
+                    Config.APP_CHALLENGE_EMAIL_VERIFICATION_ROUTE_ENV,
+                    config['CHALLENGE']['email_verification_route']
+                ),
+                "phone_verification_route": os.getenv(
+                    Config.APP_CHALLENGE_PHONE_VERIFICATION_ROUTE_ENV,
+                    config['CHALLENGE']['phone_verification_route']
+                ),
                 "user_collection": os.getenv(
                     Config.APP_CHALLENGE_USER_COLLECTION_ENV,
                     config['CHALLENGE']['user_collection']
@@ -100,7 +119,29 @@ class Config:
                     config['RABBITMQ']['command_bus_exchange']
                 ),
             },
+            "SMTP": {
+                "host": os.getenv(
+                    Config.APP_SMTP_HOST_ENV,
+                    config['SMTP']['host']
+                ),
+                "port": convert_int(
+                    os.getenv(
+                        Config.APP_SMTP_PORT_ENV,
+                        config['SMTP']['port']
+                    ),
+                    587
+                ),
+                "sender": os.getenv(
+                    Config.APP_SMTP_SENDER_ENV,
+                    config['SMTP']['sender']
+                ),
+                "password": os.getenv(
+                    Config.APP_SMTP_PASSWORD_ENV,
+                    config['SMTP']['password']
+                ),
+            },
         }
+        self._is_production = os.getenv(Config.DJANGO_SETTINGS_MODULE_ENV, '').lower().endswith('prod')
 
     @staticmethod
     def new() -> Config:
@@ -120,3 +161,15 @@ class Config:
         @return: instance of inner config parser
         """
         return self._data
+
+    def is_production(self) -> bool:
+        return self._is_production
+
+
+def convert_int(str_input: str, default: int):
+    try:
+        i = int(str_input)
+    except ValueError:
+        i = default
+    return i
+

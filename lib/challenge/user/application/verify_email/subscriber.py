@@ -2,10 +2,7 @@ from __future__ import annotations
 
 from lib.challenge.email_verification.domain.domain_event.accepted import Accepted
 from lib.challenge.user.application.verify_email.service import UserEmailVerifier
-from lib.challenge.user.domain.domain_event.created import Created
 from lib.challenge.user.domain.id import Id
-from lib.shared.domain.bus.domain_event.bus import Bus
-from lib.challenge.user.domain.repository import Repository
 from lib.shared.domain.bus.domain_event.subscriber import Subscriber
 
 

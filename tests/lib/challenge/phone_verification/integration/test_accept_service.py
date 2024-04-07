@@ -1,11 +1,11 @@
 import unittest
 
-from lib.challenge.phone_verification.application.accept.service import PhoneVerificationAcceptor
-from lib.challenge.phone_verification.domain.domain_event.accepted import Accepted
-from lib.challenge.phone_verification.domain.domain_event.not_accepted import NotAccepted
-from lib.challenge.phone_verification.domain.verification import Verification
-from lib.challenge.phone_verification.infrastructure.repository.in_memory import InMemory
-from lib.challenge.user.domain.phone import Phone
+from lib.challenge.email_verification.application.accept.service import EmailVerificationAcceptor
+from lib.challenge.email_verification.domain.domain_event.accepted import Accepted
+from lib.challenge.email_verification.domain.domain_event.not_accepted import NotAccepted
+from lib.challenge.email_verification.domain.verification import Verification
+from lib.challenge.email_verification.infrastructure.repository.in_memory import InMemory
+from lib.challenge.user.domain.email import Email
 from lib.challenge.user.domain.id import Id
 from lib.shared.domain.bus.domain_event.domain_event import DomainEvent
 from lib.shared.domain.value_object.uuid import Uuid
@@ -16,7 +16,7 @@ class TestVerificationAcceptor(unittest.TestCase):
     test_verification = Verification.new(
         Uuid.new("a8f4f4f8-25e1-4a61-91d4-ec8975a2e580").ok_value,
         Id.new("6287aa63-ac02-4957-8424-efb5af11cb4a").ok_value,
-        Phone.new("+34 666 666 001").ok_value,
+        Email.new("first.user@mail.com").ok_value,
     )
 
     test_in_memory_verification_repository = InMemory.new([test_verification])
@@ -35,7 +35,7 @@ class TestVerificationAcceptor(unittest.TestCase):
 
     def test_accept(self):
         event_bus = TestVerificationAcceptor.test_event_bus
-        service = PhoneVerificationAcceptor.new(
+        service = EmailVerificationAcceptor.new(
             TestVerificationAcceptor.test_in_memory_verification_repository,
             event_bus,
         )
@@ -55,7 +55,7 @@ class TestVerificationAcceptor(unittest.TestCase):
 
     def test_not_accept(self):
         event_bus = TestVerificationAcceptor.test_event_bus
-        service = PhoneVerificationAcceptor.new(
+        service = EmailVerificationAcceptor.new(
             TestVerificationAcceptor.test_in_memory_verification_repository,
             event_bus,
         )
