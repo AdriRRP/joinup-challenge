@@ -4,7 +4,7 @@ from lib.challenge.user.application.find.by_id.query.query import Query as FindB
 from lib.challenge.user.application.find.by_id.response.converter import Converter
 from lib.challenge.user.application.find.by_id.response.response import Response as UserResponse
 from lib.challenge.user.application.find.by_id.service import UserFinder
-from lib.challenge.user.domain.user.id import Id
+from lib.challenge.user.domain.id import Id
 
 
 class Handler(QueryHandler):

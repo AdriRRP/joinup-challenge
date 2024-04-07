@@ -23,6 +23,7 @@ class Command(AbstractCommand):
         @param phone:   user phone in string format
         @param hobbies: user hobbies in string format
         """
+        super().__init__()
 
         self._id = id
         self._name = name
@@ -39,7 +40,7 @@ class Command(AbstractCommand):
             phone: str,
             hobbies: str) -> Command:
         """
-        Factory method to create a new Query.
+        Factory method to create a new Command.
 
         @param id:      user id in string format
         @param name:    user name in string format
@@ -47,7 +48,7 @@ class Command(AbstractCommand):
         @param email:   user email in string format
         @param phone:   user phone in string format
         @param hobbies: user hobbies in string format
-        @return: instance of this Query
+        @return: instance of this Command
         """
 
         command = Command(id, name, surname, email, phone, hobbies)
@@ -100,3 +101,18 @@ class Command(AbstractCommand):
         @return: the string value of command hobbies.
         """
         return self._hobbies
+
+
+    @staticmethod
+    def command_name() -> str:
+        return "create.user.command"
+
+    def to_primitive(self) -> dict:
+        return {
+            'id': self._id,
+            'name': self._name,
+            'surname': self._surname,
+            'email': self._email,
+            'phone': self._phone,
+            'hobbies': self._hobbies,
+        }

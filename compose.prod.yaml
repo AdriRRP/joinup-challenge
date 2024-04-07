@@ -1,0 +1,155 @@
+services:
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./etc/mongo/challenge/init.js:/docker-entrypoint-initdb.d/00-joinup-challenge-init.js:ro
+      - ./etc/mongo/challenge/user/init.js:/docker-entrypoint-initdb.d/01-joinup-challenge-user-init.js:ro
+      - ./etc/mongo/challenge/email_verification/init.js:/docker-entrypoint-initdb.d/02-joinup-challenge-email_verification-init.js:ro
+      - ./etc/mongo/challenge/phone_verification/init.js:/docker-entrypoint-initdb.d/03-joinup-challenge-phone_verification-init.js:ro
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: root
+      RABBITMQ_DEFAULT_PASS: 1234
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  mail-service:
+      image: richarvey/mailhog
+      container_name: mail-service
+      ports:
+        - "1025:1025"
+        - "8025:8025"
+
+  django-server:
+    build: .
+    restart: always
+    depends_on:
+      - mongo
+      - rabbitmq
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+      APP_SMTP_HOST: mail-service
+      DJANGO_SETTINGS_MODULE: django_project.settings.prod
+    ports:
+      - "8000:8000"
+    command: ./wait-for-it.sh mongo:27017 rabbitmq:5672 mail-service:1025 --strict -- python manage.py runserver 0.0.0.0:8000
+
+  django-user-creator:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+      APP_SMTP_HOST: mail-service
+      DJANGO_SETTINGS_MODULE: django_project.settings.prod
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py create_user_subscriber_command
+
+  django-email-verification-acceptor:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+      APP_SMTP_HOST: mail-service
+      DJANGO_SETTINGS_MODULE: django_project.settings.prod
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py accept_email_verification_command
+
+  django-phone-verification-acceptor:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+      APP_SMTP_HOST: mail-service
+      DJANGO_SETTINGS_MODULE: django_project.settings.prod
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py accept_phone_verification_command
+
+  django-on-user-created-email-verification:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+      APP_SMTP_HOST: mail-service
+      DJANGO_SETTINGS_MODULE: django_project.settings.prod
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py create_email_verification_on_user_created_subscriber_command
+
+  django-on-user-created-phone-verification:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+      APP_SMTP_HOST: mail-service
+      DJANGO_SETTINGS_MODULE: django_project.settings.prod
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py create_phone_verification_on_user_created_subscriber_command
+
+  django-on-email-verification-created:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+      APP_SMTP_HOST: mail-service
+      DJANGO_SETTINGS_MODULE: django_project.settings.prod
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py send_verification_mail_on_email_verification_created_subscriber_command
+
+  django-on-phone-verification-created:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+      APP_SMTP_HOST: mail-service
+      DJANGO_SETTINGS_MODULE: django_project.settings.prod
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py send_verification_sms_on_phone_verification_created_subscriber_command
+
+  django-on-email-verification-accepted:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+      APP_SMTP_HOST: mail-service
+      DJANGO_SETTINGS_MODULE: django_project.settings.prod
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py verify_email_on_email_verification_accepted_subscriber_command
+
+  django-on-phone-verification-accepted:
+    build: .
+    restart: always
+    depends_on:
+      - django-server
+    environment:
+      APP_MONGO_URI: mongodb://mongo:27017
+      APP_RABBITMQ_HOST: rabbitmq
+      APP_SMTP_HOST: mail-service
+      DJANGO_SETTINGS_MODULE: django_project.settings.prod
+    command: ./wait-for-it.sh django-server:8000 --strict -- python manage.py verify_phone_on_phone_verification_accepted_subscriber_command

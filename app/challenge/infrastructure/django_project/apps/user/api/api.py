@@ -7,6 +7,8 @@ from rest_framework import status
 from lib.challenge.user.application.find.all.query.query import Query as AllUsersQuery
 from lib.challenge.user.application.find.by_id.query.query import Query as ByIdUserQuery
 from lib.challenge.user.application.register.command.command import Command as RegisterCommand
+from lib.challenge.email_verification.application.accept.command.command import Command as AcceptEmailCommand
+from lib.challenge.phone_verification.application.accept.command.command import Command as AcceptPhoneCommand
 from app.challenge import kernel
 
 
@@ -87,6 +89,42 @@ class RegisterUserAPIView(APIView):
                 request.data['phone'],
                 request.data['hobbies'],
             )
+            kernel.command_bus.dispatch(command)
+            return Response(
+                data={'status': f"Request accepted, you will be notified when finished"},
+                status=status.HTTP_202_ACCEPTED
+            )
+        else:
+            return Response(
+                data={'err_msg': f"Version {request.version} not yet supported"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class AcceptEmailVerificationAPIView(APIView):
+    """Manages email verifications"""
+
+    def get(self, request, version, code):
+        if version == 'v1':
+            command = AcceptEmailCommand.new(code)
+            kernel.command_bus.dispatch(command)
+            return Response(
+                data={'status': f"Request accepted, you will be notified when finished"},
+                status=status.HTTP_202_ACCEPTED
+            )
+        else:
+            return Response(
+                data={'err_msg': f"Version {request.version} not yet supported"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class AcceptPhoneVerificationAPIView(APIView):
+    """Manages phone verifications"""
+
+    def get(self, request, version, code):
+        if version == 'v1':
+            command = AcceptPhoneCommand.new(code)
             kernel.command_bus.dispatch(command)
             return Response(
                 data={'status': f"Request accepted, you will be notified when finished"},

@@ -3,9 +3,9 @@ from typing import Optional
 
 from result import Result
 
-from lib.challenge.user.domain.user.id import Id
-from lib.challenge.user.domain.user.repository import Repository
-from lib.challenge.user.domain.user.user import User
+from lib.challenge.user.domain.id import Id
+from lib.challenge.user.domain.repository import Repository
+from lib.challenge.user.domain.user import User
 
 
 class UserFinder:

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from lib.shared.domain.bus.domain_event.bus import Bus
-from lib.challenge.user.domain.user.repository import Repository
-from lib.challenge.user.domain.user.user import User
+from lib.challenge.user.domain.repository import Repository
+from lib.challenge.user.domain.user import User
 
 
 class UserRegistrar:
@@ -42,4 +42,5 @@ class UserRegistrar:
         # TODO: Manage errors?
 
         self._repository.save(user)
-        self._event_bus.publish(user.pull_domain_events())
+        for event in user.pull_domain_events():
+            self._event_bus.publish(event)

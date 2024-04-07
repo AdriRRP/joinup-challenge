@@ -3,10 +3,10 @@ from typing import Optional
 
 from result import Result, Ok, Err
 
-from lib.challenge.user.domain.user.id import Id
-from lib.challenge.user.domain.user.repository import Repository
-from lib.challenge.user.domain.user.user import User
-from lib.challenge.user.domain.user.users import Users
+from lib.challenge.user.domain.id import Id
+from lib.challenge.user.domain.repository import Repository
+from lib.challenge.user.domain.user import User
+from lib.challenge.user.domain.users import Users
 
 
 class InMemory(Repository):
@@ -50,3 +50,27 @@ class InMemory(Repository):
 
     def save(self, user: User):
         self._users.append(user)
+
+    def verify_email(self, id: Id):
+        user_found = [user for user in self._users if user.id() == id.value()]
+        if user_found:
+            if len(user_found) == 1:
+                user_found[0]._email_verified = True
+            else:
+                # send event
+                pass
+        else:
+            # send event
+            pass
+
+    def verify_phone(self, id: Id):
+        user_found = [user for user in self._users if user.id() == id.value()]
+        if user_found:
+            if len(user_found) == 1:
+                user_found[0]._phone_verified = True
+            else:
+                # send event
+                pass
+        else:
+            # send event
+            pass

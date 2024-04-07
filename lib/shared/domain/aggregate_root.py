@@ -1,5 +1,7 @@
 from abc import ABCMeta
 
+from lib.shared.domain.bus.domain_event.domain_event import DomainEvent
+
 
 class AggregateRoot(metaclass=ABCMeta):
     """Entry point to Entities with aggregate root role"""
@@ -8,16 +10,16 @@ class AggregateRoot(metaclass=ABCMeta):
         """
         Initializes empty list of domain events
         """
-        self._domain_events = []
+        self._domain_events: list[DomainEvent] = []
 
-    def pull_domain_events(self):
+    def pull_domain_events(self) -> list[DomainEvent]:
         """
         Pull stored domain events.
 
         @return: Current domain events
         """
         domain_events = self._domain_events
-        self._domain_events = []
+        self._domain_events: list[DomainEvent] = []
         return domain_events
 
     def record(self, domain_event):
