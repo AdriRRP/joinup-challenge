@@ -25,6 +25,9 @@ services:
       - "15672:15672"
 
   mail-service:
+      # Official image:
+      #image: mailhog/mailhog
+      # ARM64 compatible image:
       image: richarvey/mailhog
       container_name: mail-service
       ports:
